@@ -1,0 +1,14 @@
+server:
+  port: 8080
+service:
+  version: "1.0.0"
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          # For file-system based repo use 'native' profile; we'll keep default here
+          uri: file:../config-repo
+  profiles:
+    active: native

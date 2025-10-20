@@ -1,0 +1,648 @@
+{
+	"info": {
+		"_postman_id": "339a283c-91b6-4476-a461-6cce1757aa48",
+		"name": "Lab2 Microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46748429",
+		"_collection_link": "https://michael-4372893.postman.co/workspace/Michael's-Workspace~e8174641-e50b-48d6-813e-b96c4ccfb1a2/collection/46748429-339a283c-91b6-4476-a461-6cce1757aa48?action=share&source=collection_link&creator=46748429"
+	},
+	"item": [
+		{
+			"name": "user-service",
+			"item": [
+				{
+					"name": "GET /api/users (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_user}}/api/users",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /api/users (201)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 201', function () { pm.response.to.have.status(201); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Иван Иванов\",\n  \"login\": \"ivan_new\",\n  \"password\": \"{noop}password\",\n  \"email\": \"ivan_new@example.com\",\n  \"companyId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url_user}}/api/users",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /api/users/{id} (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Иван Обновлённый\",\n  \"email\": \"ivan_update@example.com\",\n  \"companyId\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url_user}}/api/users/{{user_id}}",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /api/users/{id}/activation (204)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 204', function () { pm.response.to.have.status(204); });"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_user}}/api/users/{{user_id}}/activation?active=false",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"activation"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "false"
+								},
+								{
+									"key": "active",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/users/{id}/exists (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_user}}/api/users/{{user_id}}/exists",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"exists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/users/{id}/name (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_user}}/api/users/{{user_id}}/name",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /api/users (create) - company not found [404]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 404', function () { pm.response.to.have.status(404); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Негатив\",\n  \"login\": \"neg_user\",\n  \"password\": \"{noop}pass\",\n  \"email\": \"neg_user@example.com\",\n  \"companyId\": {{non_existing_company_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url_user}}/api/users",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/users/{inactive_user_id}/exists (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 404', function () { pm.response.to.have.status(404); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_user}}/api/users/{{inactive_user_id}}/exists",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{inactive_user_id}}",
+								"exists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /api/users (201) - create new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 201', function () { pm.response.to.have.status(201); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"{{new_user_name}}\",\n  \"login\": \"{{new_user_login}}\",\n  \"password\": \"{{new_user_password}}\",\n  \"email\": \"{{new_user_email}}\",\n  \"companyId\": {{new_user_company_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url_user}}/api/users",
+							"host": [
+								"{{base_url_user}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "company-service",
+			"item": [
+				{
+					"name": "GET /api/companies/{id}/exists (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_company}}/api/companies/{{company_id}}/exists",
+							"host": [
+								"{{base_url_company}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}",
+								"exists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/companies (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_company}}/api/companies",
+							"host": [
+								"{{base_url_company}}"
+							],
+							"path": [
+								"api",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /api/companies (201)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 201', function () { pm.response.to.have.status(201); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"ООО Пример\",\n  \"ogrn\": \"1122334455667\",\n  \"description\": \"Тестовая компания\",\n  \"directorId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url_company}}/api/companies",
+							"host": [
+								"{{base_url_company}}"
+							],
+							"path": [
+								"api",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/companies/{id}/name (200)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 200', function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_company}}/api/companies/{{company_id}}/name",
+							"host": [
+								"{{base_url_company}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{company_id}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /api/companies (create) - director not found [404]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 404', function () { pm.response.to.have.status(404); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Негатив\",\n  \"ogrn\": \"0000000000000\",\n  \"description\": \"Нет директора\",\n  \"directorId\": {{non_existing_user_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url_company}}/api/companies",
+							"host": [
+								"{{base_url_company}}"
+							],
+							"path": [
+								"api",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/companies/{non_existing_company_id}/name (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status is 404', function () { pm.response.to.have.status(404); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_company}}/api/companies/{{non_existing_company_id}}/name",
+							"host": [
+								"{{base_url_company}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"{{non_existing_company_id}}",
+								"name"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "serv health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/actuator/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/actuator/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "comp health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8083/actuator/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url_user",
+			"value": "http://localhost:8081"
+		},
+		{
+			"key": "base_url_company",
+			"value": "http://localhost:8083"
+		},
+		{
+			"key": "user_id",
+			"value": "1"
+		},
+		{
+			"key": "inactive_user_id",
+			"value": "3"
+		},
+		{
+			"key": "non_existing_user_id",
+			"value": "9999"
+		},
+		{
+			"key": "company_id",
+			"value": "1"
+		},
+		{
+			"key": "non_existing_company_id",
+			"value": "9999"
+		},
+		{
+			"key": "new_user_name",
+			"value": "Тест Пользователь"
+		},
+		{
+			"key": "new_user_login",
+			"value": "test_user_1"
+		},
+		{
+			"key": "new_user_password",
+			"value": "{noop}pass"
+		},
+		{
+			"key": "new_user_email",
+			"value": "test_user_1@example.com"
+		},
+		{
+			"key": "new_user_company_id",
+			"value": "1"
+		}
+	]
+}

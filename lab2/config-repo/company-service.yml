@@ -1,0 +1,26 @@
+server:
+  port: 8083
+service:
+  description: "Company Service"
+
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/postgres?currentSchema=companies
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  flyway:
+    enabled: true
+    schemas: companies
+    baseline-on-migrate: true
+    connect-retries: 10
+
+user-service:
+  base-url: http://user-service:8081
