@@ -1,0 +1,4 @@
+server:
+  port: 8081
+service:
+  description: "${USER_SERVICE_DESCRIPTION:тестовый профиль}"

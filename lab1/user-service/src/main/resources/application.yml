@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: user-service
+  config:
+    import: optional:configserver:http://localhost:8080
+
+  profiles:
+    #active: test
+    active: default
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh
