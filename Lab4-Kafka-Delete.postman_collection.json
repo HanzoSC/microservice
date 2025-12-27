@@ -1,0 +1,446 @@
+{
+	"info": {
+		"_postman_id": "lab3-kafka-delete",
+		"name": "Lab3 - Kafka: Удаление компании",
+		"description": "Тестирование асинхронного удаления компании через Kafka\n\nПроцесс:\n1. Создание новой компании\n2. Проверка списка компаний\n3. Удаление компании (soft delete + Kafka)\n4. Проверка, что компания удалена\n5. Проверка, что company_id сброшен у пользователей",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Подготовка: Получить активных пользователей",
+			"item": [
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Сохраняем ID первого активного пользователя для использования в следующих запросах",
+									"if (pm.response.code === 200) {",
+									"    const users = pm.response.json();",
+									"    const activeUser = users.find(u => u.active === true);",
+									"    if (activeUser) {",
+									"        pm.collectionVariables.set(\"activeUserId\", activeUser.id);",
+									"        console.log(\"Active user ID saved:\", activeUser.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/user/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"user",
+								"api",
+								"users"
+							]
+						},
+						"description": "Получаем список пользователей для поиска активного директора для новой компании"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Создание новой компании",
+			"item": [
+				{
+					"name": "Create Company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Сохраняем ID созданной компании для последующего удаления",
+									"if (pm.response.code === 201) {",
+									"    const company = pm.response.json();",
+									"    pm.collectionVariables.set(\"createdCompanyId\", company.id);",
+									"    console.log(\"Created company ID saved:\", company.id);",
+									"    pm.test(\"Company created successfully\", function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"ООО Тестовая Компания\",\n  \"ogrn\": \"123456789012345\",\n  \"description\": \"Компания для тестирования удаления через Kafka\",\n  \"directorId\": {{activeUserId}}\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies"
+							]
+						},
+						"description": "Создаем новую компанию. directorId должен быть ID активного пользователя (используется переменная из предыдущего запроса)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Проверка списка компаний (до удаления)",
+			"item": [
+				{
+					"name": "Get All Companies (Before Delete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Created company exists in list\", function () {",
+									"    const companies = pm.response.json();",
+									"    const createdCompanyId = pm.collectionVariables.get(\"createdCompanyId\");",
+									"    const foundCompany = companies.find(c => c.id == createdCompanyId);",
+									"    pm.expect(foundCompany).to.not.be.undefined;",
+									"    pm.expect(foundCompany.name).to.eql(\"ООО Тестовая Компания\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies"
+							]
+						},
+						"description": "Проверяем, что созданная компания присутствует в списке"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Создание пользователя с company_id (опционально)",
+			"item": [
+				{
+					"name": "Create User with Company ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const user = pm.response.json();",
+									"    pm.collectionVariables.set(\"userWithCompanyId\", user.id);",
+									"    console.log(\"User with company ID saved:\", user.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Тестовый Пользователь\",\n  \"login\": \"testuser\",\n  \"password\": \"password123\",\n  \"email\": \"testuser@example.com\",\n  \"companyId\": {{createdCompanyId}}\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8085/user/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"user",
+								"api",
+								"users"
+							]
+						},
+						"description": "Создаем пользователя, который будет работать в созданной компании. После удаления компании его company_id должен быть сброшен в null"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users (Before Delete)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/user/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"user",
+								"api",
+								"users"
+							]
+						},
+						"description": "Проверяем список пользователей до удаления компании. Пользователи должны иметь company_id"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Удаление компании",
+			"item": [
+				{
+					"name": "Delete Company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Company deleted successfully\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"// Ждем немного для обработки Kafka сообщений",
+									"setTimeout(function() {}, 2000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies/{{createdCompanyId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies",
+								"{{createdCompanyId}}"
+							]
+						},
+						"description": "Удаляем компанию. Происходит:\n1. Soft delete (компания помечается как deleted)\n2. Отправка сообщения в Kafka топик 'company-deleted'\n3. User-service обрабатывает сообщение и сбрасывает company_id у пользователей\n4. User-service отправляет сообщение в топик 'company-hard-delete'\n5. Company-service физически удаляет компанию из БД\n\nОжидается: 204 No Content"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Non-Existent Company (404 Test)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Non-existent company returns 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies/99999",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies",
+								"99999"
+							]
+						},
+						"description": "Проверяем, что при попытке удалить несуществующую компанию возвращается 404"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Проверка после удаления",
+			"item": [
+				{
+					"name": "Get All Companies (After Delete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Deleted company is not in list\", function () {",
+									"    const companies = pm.response.json();",
+									"    const createdCompanyId = pm.collectionVariables.get(\"createdCompanyId\");",
+									"    const foundCompany = companies.find(c => c.id == createdCompanyId);",
+									"    pm.expect(foundCompany).to.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies"
+							]
+						},
+						"description": "Проверяем, что удаленная компания больше не присутствует в списке компаний"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users (After Delete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Users company_id is reset\", function () {",
+									"    const users = pm.response.json();",
+									"    const createdCompanyId = pm.collectionVariables.get(\"createdCompanyId\");",
+									"    const usersWithDeletedCompany = users.filter(u => u.companyId == createdCompanyId);",
+									"    pm.expect(usersWithDeletedCompany.length).to.eql(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/user/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"user",
+								"api",
+								"users"
+							]
+						},
+						"description": "Проверяем, что у пользователей, которые работали в удаленной компании, поле company_id сброшено в null"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Проверка логов Kafka (информация)",
+			"item": [
+				{
+					"name": "Info: Check Kafka Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies"
+							]
+						},
+						"description": "Для проверки работы Kafka проверьте логи контейнеров:\n\n```bash\n# Логи company-service\ndocker logs lab2-company-service\n\n# Логи user-service\ndocker logs lab2-user-service\n\n# Логи kafka\ndocker logs lab2-kafka\n```\n\nВ логах должны быть видны сообщения:\n- \"Received company deleted event for company ID: {id}\" (в user-service)\n- \"Reset company_id for user ID: {id}\" (в user-service)\n- \"Sent hard delete event for company ID: {id}\" (в user-service)\n- \"Received hard delete event for company ID: {id}\" (в company-service)\n- \"Successfully hard deleted company ID: {id}\" (в company-service)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "activeUserId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "createdCompanyId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userWithCompanyId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+

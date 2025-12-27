@@ -1,0 +1,27 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix=1
+        - id: company-service
+          uri: lb://COMPANY-SERVICE
+          predicates:
+            - Path=/company/**
+          filters:
+            - StripPrefix=1
+
+server:
+  port: 8085
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+

@@ -1,0 +1,342 @@
+{
+	"info": {
+		"_postman_id": "lab3-eureka-gateway",
+		"name": "Lab3 - Eureka & API Gateway",
+		"description": "Проверка выполнения ТЗ: Discovery Server, API Gateway, Feign Clients",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Eureka Discovery Server",
+			"item": [
+				{
+					"name": "Eureka Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8761",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8761"
+						},
+						"description": "Откройте в браузере. Проверьте, что зарегистрированы: API-GATEWAY, USER-SERVICE, COMPANY-SERVICE"
+					}
+				}
+			]
+		},
+		{
+			"name": "2. API Gateway - User Service Routes",
+			"item": [
+				{
+					"name": "Get All Users (через Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/user/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"user",
+								"api",
+								"users"
+							]
+						},
+						"description": "✅ ТЗ: Проверка маршрута /user/** → user-service\nОжидается: 200 OK, список пользователей"
+					}
+				},
+				{
+					"name": "Create User (через Gateway)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"companyId\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8085/user/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"user",
+								"api",
+								"users"
+							]
+						},
+						"description": "✅ ТЗ: Создание пользователя через Gateway\nОжидается: 201 Created"
+					}
+				},
+				{
+					"name": "Get User Exists (через Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/user/api/users/1/exists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"user",
+								"api",
+								"users",
+								"1",
+								"exists"
+							]
+						},
+						"description": "Проверка существования пользователя через Gateway"
+					}
+				},
+				{
+					"name": "Get User Name (через Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/user/api/users/1/name",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"user",
+								"api",
+								"users",
+								"1",
+								"name"
+							]
+						},
+						"description": "Получение имени пользователя через Gateway"
+					}
+				}
+			]
+		},
+		{
+			"name": "3. API Gateway - Company Service Routes",
+			"item": [
+				{
+					"name": "Get All Companies (через Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies"
+							]
+						},
+						"description": "✅ ТЗ: Проверка маршрута /company/** → company-service\nОжидается: 200 OK, список компаний"
+					}
+				},
+				{
+					"name": "Create Company (через Gateway)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test Company\",\n  \"description\": \"Test Description\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies"
+							]
+						},
+						"description": "✅ ТЗ: Создание компании через Gateway\nОжидается: 201 Created"
+					}
+				},
+				{
+					"name": "Get Company Exists (через Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies/1/exists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies",
+								"1",
+								"exists"
+							]
+						},
+						"description": "Проверка существования компании через Gateway"
+					}
+				},
+				{
+					"name": "Get Company Name (через Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8085/company/api/companies/1/name",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"company",
+								"api",
+								"companies",
+								"1",
+								"name"
+							]
+						},
+						"description": "Получение имени компании через Gateway"
+					}
+				}
+			]
+		},
+		{
+			"name": "4. ✅ ТЗ: Проверка Feign Clients (через Gateway)",
+			"item": [
+				{
+					"name": "Create User (user-service → company-service через Gateway)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"email\": \"test@example.com\",\n  \"companyId\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "✅ ТЗ: User-service использует Feign Client для вызова company-service через api-gateway\n\nШаги проверки:\n1. Выполните запрос\n2. Проверьте логи user-service: должен быть вызов через api-gateway\n3. Проверьте логи api-gateway: должен быть запрос к /company/api/companies/{id}/exists\n4. Проверьте логи company-service: должен обработать запрос\n\nОжидается: 201 Created (если companyId=1 существует)"
+					}
+				},
+				{
+					"name": "Create Company (company-service → user-service через Gateway)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test Company\",\n  \"description\": \"Test Description\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8083/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"companies"
+							]
+						},
+						"description": "✅ ТЗ: Company-service использует Feign Client для вызова user-service через api-gateway\n\nШаги проверки:\n1. Выполните запрос\n2. Проверьте логи company-service: должен быть вызов через api-gateway\n3. Проверьте логи api-gateway: должен быть запрос к /user/api/users/{id}/exists\n4. Проверьте логи user-service: должен обработать запрос\n\nОжидается: 201 Created"
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Прямые вызовы (для сравнения)",
+			"item": [
+				{
+					"name": "User Service (напрямую)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					}
+				},
+				{
+					"name": "Company Service (напрямую)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"api",
+								"companies"
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}
+
